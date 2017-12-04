@@ -42,4 +42,4 @@ def initialize_parameters(n_x,n_h,n_y):
     parameters = {"W1":W1,"W2":W2,"b1":b1,"b2":b2}
 
 
-
+print("HH")
