@@ -1,10 +1,7 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import h5py
-import scipy
-from PIL import Image
-from scipy import ndimage
-from wq_util import *
+
+from utils.wq_util import *
+
 
 def load_dataset():
     train_dataset = h5py.File('datasets/train_catvnoncat.h5', "r")
