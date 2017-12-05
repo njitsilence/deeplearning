@@ -41,5 +41,66 @@ def initialize_parameters(n_x,n_h,n_y):
 
     parameters = {"W1":W1,"W2":W2,"b1":b1,"b2":b2}
 
+def initialize_parameters_deep(layer_dims):
+    """
 
-print("HH")
+    :param layer_dims: python array(list) containing the dimensons of each layer in our network
+    :return:
+    parameters: --- python dictionary containing the parameters "W1","b1",...."WL","bl"
+
+    """
+    np.random.seed(3)
+    parameters={}
+    L=len(layer_dims) #number of layers in the network
+
+    for l in range(1,L):
+        parameters["W"+str(l)] = np.random.randn(layer_dims[l],layer_dims[l-1])*0.01
+        parameters["b"+str(l)] = np.zeros([layer_dims[l],1])
+
+    assert(parameters["W"+str(l)].shape==(layer_dims[l],layer_dims[l-1]))
+    assert(parameters["b" + str(l)].shape == (layer_dims[l],1))
+
+    return parameters
+
+def linear_forward(A,W,b):
+    """
+    implement the linear part of layer's forward propagation
+    Arguments:
+    A -- activation from previous layer(or input data ): (size of previous layer, number of examples)
+    W -- weights matrix: numpy array of shape (size of current layer, size of previous layer
+    b -- bias vector, numpy array of shape(size of the current layer, 1)
+
+    :return:
+    Z -- the input of the activation function , also called pre-activation parameter
+    cache -- a python dictionary containing "A", "W" and "b" ; stored for computiing the backward pass efficiency
+
+    """
+    Z=np.dot(W,A)+b
+    assert(Z.shape==(W.shape[0],A.shape[1]))
+    cache=(A,W,b)
+
+    return Z,cache
+
+def linear_activation_forward(A_prev,W,b,activation):
+    """
+    implement the forward propagation for the LINEAR -> ACTIVATION layer
+    :param A_prev: activations from previous layer(or input data): (size of previous layer, number of examples)
+    :param W: weights matrix: numpy array of shape(size of the current layer,size of previous layer)
+    :param b: bias vector, numpy array of shape(size of current layer,1)
+    :param activation: the activation to be used in this layer, stored as a text string :"sigmoid" or "relu"
+    :return:
+    A -- the output of the activation function, also called the post-activation value
+    cache - a python dictionary containing "linear_cache" and "activation_cache"
+    """
+    Z, linear_cache = linear_forward(A_prev, W, b)
+    if activation == "sigmoid":
+        A,activation_cache = sigmoid(Z)
+    elif activation == "relu":
+        A,activation_cache = relu(Z)
+
+    assert(A.shape==(W.shape[0],A_prev.shape[1]))
+    cache = (linear_cache,activation_cache)
+    return A,cache
+
+
+
