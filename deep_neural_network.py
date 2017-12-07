@@ -102,5 +102,92 @@ def linear_activation_forward(A_prev,W,b,activation):
     cache = (linear_cache,activation_cache)
     return A,cache
 
+def L_model_forward(X,parameters):
+    """
+    implement forward propagation for the [linear->relu]*(L-1)->linear-sigmoid computation
+    :param X: -- data, numpy array of shape(input size,number of examples)
+    :param parameters: output of initialize_parameters_deep()
+    :return:
+    AL -- last post-activation value
+    caches -- list of the caches containing:
+                every cache of linear_relu_forward()(there are L-1 of them, indexed from 0 to L-2)
+                the cache of linear_sigmoid_forward()(there is one ,indexed L-1)
+    """
+    caches = []
+    A = X
+    L = len(parameters)//2 # number for layers in the neural network
+    # implement [linear->relu]*(L-1). add cache to the "caches" list
+    for l in range(1,L):
+        A_prev = A
+        A,cache = linear_activation_forward(A_prev,parameters["W"+str(l)],parameters["b"+str(l)],"relu")
+        caches.append(cache)
 
+    # implement [linear->sigmoid]. add cachee to the "caches" list
+    AL,cache =linear_activation_forward(A,parameters["W"+str(L)],parameters["b"+str(L)],"sigmoid")
+    caches.append(cache)
+
+    assert(AL.shape==(1,X.shape[1]))
+    return AL,caches
+"""
+X, parameters = L_model_forward_test_case_2hidden()
+AL, caches = L_model_forward(X, parameters)
+print("AL = " + str(AL))
+print("Length of caches list = " + str(len(caches)))
+"""
+
+def compute_cost(AL,Y):
+    """
+    implement the cost function
+    :param AL: -- probability vector corresponding to your label predictions, shape(1,number of examples)
+    :param Y: -- true "label" vector (for example : containing 0 if non-cat), shape(1,number of examples)
+    :return:
+    cost --cross-entropy cost
+    """
+    m=Y.shape[1]
+
+    cost = -np.sum(Y*np.log(AL)+(1-Y)*np.log(1-AL))/m
+
+    cost=np.squeeze(cost)
+
+    assert(cost.shape==())
+
+    return cost
+
+"""
+Y, AL = compute_cost_test_case()
+print("cost = " + str(compute_cost(AL, Y)))
+"""
+
+def linear_backward(dZ,cache):
+    """
+    Implement the linear portion of backward propagation for a single layer(layer l)
+    :param dZ: -- Gradient of the cost with respect to linear outputs(of current layer l)
+    :param cache: -- tuple of values(A_prev,W,b) come from the forward propagation in the current layer
+    :return:
+    dA_prev -- Gradient of the cost with respect to activation (of the previous layer l-1), same shape as A_prev
+    dW --  Gradient of the cost with respect to W (current layer l), same shape as W
+    db --  Gradient of the cost with respect to b (current layer l), same shape as b
+
+    """
+
+    A_prev,W,b = cache
+    m = A_prev.shape[1]
+
+    dW = np.dot(dZ,A_prev.T)/m
+    db = np.sum(dZ, axis=1).reshape(b.shape) / m
+    dA_prev = np.dot(W.T, dZ)
+
+    assert (dA_prev.shape == A_prev.shape)
+    assert (dW.shape == W.shape)
+    assert (db.shape == b.shape)
+
+    return dA_prev, dW, db
+
+
+dZ, linear_cache = linear_backward_test_case()
+
+dA_prev, dW, db = linear_backward(dZ, linear_cache)
+print ("dA_prev = "+ str(dA_prev))
+print ("dW = " + str(dW))
+print ("db = " + str(db))
 
