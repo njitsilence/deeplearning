@@ -7,6 +7,8 @@ import sklearn
 import sklearn.datasets
 import scipy.io
 from testCases.reg_testCases import *
+import redis
+import pickle
 
 plt.rcParams['figure.figsize'] = (7.0, 4.0) # set default size of plots
 plt.rcParams['image.interpolation'] = 'nearest'
@@ -81,7 +83,13 @@ def model(X,Y,learning_rate=0.3,num_iterations=30000,print_cost=True,lambd=0,kee
 
     return parameters
 
+
 # parameters = model(train_X, train_Y)
+# conn = redis.Redis("localhost")
+# p_parameters = pickle.dumps(parameters)
+# conn.set("baseParameters",p_parameters)
+# parameters = pickle.loads(conn.get("baseParameters"))
+#
 # print("On the training set:")
 # predictions_train = predict(train_X, train_Y, parameters)
 # print("On the test set:")
@@ -164,6 +172,12 @@ def backward_propagation_with_regularization(X,Y,cache,lambd):
 
 
 # parameters = model(train_X, train_Y, lambd=0.7)
+#-------------------------------------- store the parameters to redis
+conn = redis.Redis("localhost")
+# p_parameters = pickle.dumps(parameters)
+# conn.set("L2Parameters",p_parameters)
+parameters = pickle.loads(conn.get("L2Parameters"))
+#--------------------------------------
 # print("On the train set:")
 # predictions_train = predict(train_X, train_Y, parameters)
 # print("On the test set:")
@@ -288,12 +302,19 @@ def backward_propagation_with_dropout(X,Y,cache,keep_prob):
 # print(train_X.shape)
 # print(train_Y.shape)
 
-parameters = model(train_X, train_Y, keep_prob=0.86, learning_rate=0.3)
+# parameters = model(train_X, train_Y, keep_prob=0.86, learning_rate=0.3)
+#-------------------------------------- store the parameters to redis
+# conn = redis.Redis("localhost")
+# p_parameters = pickle.dumps(parameters)
+# conn.set("dropoutParameters",p_parameters)
+# parameters = pickle.loads(conn.get("dropoutParameters"))
+#--------------------------------------
 
-print("On the train set:")
-predictions_train = predict(train_X, train_Y, parameters)
-print("On the test set:")
-predictions_test = predict(test_X, test_Y, parameters)
+#
+# print("On the train set:")
+# predictions_train = predict(train_X, train_Y, parameters)
+# print("On the test set:")
+# predictions_test = predict(test_X, test_Y, parameters)
 
 # plt.title("Model with dropout")
 # axes = plt.gca()
