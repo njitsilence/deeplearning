@@ -1,0 +1,28 @@
+# python
+*.py[cod]
+.python-version
+.idea
+0*.py
+
+# C/C++
+/dist/
+*db
+staticmanifest.json
+.vscode
+*.a
+*.o
+.project
+*.so
+*.sw[op]
+*.deps
+*.la
+*.libs
+*.lo
+/bin/
+/obj/
+
+# others
+*.bak
+/si3prj/
+/doc/*.doc
+!.gitignore
