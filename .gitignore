@@ -26,4 +26,5 @@ staticmanifest.json
 /si3prj/
 /doc/*.doc
 !.gitignore
-/env
+/venv
+*.out
